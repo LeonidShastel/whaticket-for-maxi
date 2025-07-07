@@ -306,13 +306,15 @@ const TicketsList = (props) => {
 			const newCountObject = tickets.reduce((acc, ticket) => {
 				if (!acc[ticket.whatsappId])
 					acc[ticket.whatsappId] = 0;
-				if (ticket.unreadMessages !== 0)
+
+				const candidate = ticketsList.find(el=>el.id === ticket.id);
+				if (ticket.unreadMessages > 0 || candidate?.unreadMessages > 0)
 					acc[ticket.whatsappId]++;
 
 				return acc;
-			}, {})
+			}, {});
 
-			updateCount(newCountObject);
+			updateCount({...newCountObject});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [tickets, ticketsList]);
