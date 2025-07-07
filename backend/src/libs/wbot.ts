@@ -74,7 +74,7 @@ export const initWbot = async (whatsapp: Whatsapp): Promise<Session> => {
           username: proxy.username,
           password: proxy.password
         }
-        args.push(`--http-proxy=${proxy.ip}:${proxy.port}`);
+        args.push(`--proxy-server=http://${proxy.ip}:${proxy.port}`);
       }
 
       const wbot: Session = new Client({
