@@ -189,6 +189,7 @@ const messages = {
           name: "Name",
           color: "Color",
           greetingMessage: "Greeting Message",
+          proxy: "Proxy"
         },
         buttons: {
           okAdd: "Add",

@@ -63,6 +63,7 @@ const WhatsAppModal = ({ open, onClose, whatsAppId }) => {
 		name: "",
 		greetingMessage: "",
 		farewellMessage: "",
+		proxy: "",
 		isDefault: false,
 	};
 	const [whatsApp, setWhatsApp] = useState(initialState);
@@ -125,6 +126,7 @@ const WhatsAppModal = ({ open, onClose, whatsAppId }) => {
 					enableReinitialize={true}
 					validationSchema={SessionSchema}
 					onSubmit={(values, actions) => {
+						// console.log(values);
 						setTimeout(() => {
 							handleSaveWhatsApp(values);
 							actions.setSubmitting(false);
@@ -156,6 +158,23 @@ const WhatsAppModal = ({ open, onClose, whatsAppId }) => {
 											/>
 										}
 										label={i18n.t("whatsappModal.form.default")}
+									/>
+								</div>
+								<div>
+									<Field
+										as={TextField}
+										label={i18n.t("queueModal.form.proxy")}
+										type="proxy"
+										fullWidth
+										name="proxy"
+										error={
+											touched.proxy && Boolean(errors.proxy)
+										}
+										helperText={
+											touched.proxy && errors.proxy
+										}
+										variant="outlined"
+										margin="dense"
 									/>
 								</div>
 								<div>

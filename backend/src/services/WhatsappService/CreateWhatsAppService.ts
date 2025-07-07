@@ -9,6 +9,7 @@ interface Request {
   queueIds?: number[];
   greetingMessage?: string;
   farewellMessage?: string;
+  proxy?: string;
   status?: string;
   isDefault?: boolean;
 }
@@ -24,6 +25,7 @@ const CreateWhatsAppService = async ({
   queueIds = [],
   greetingMessage,
   farewellMessage,
+  proxy,
   isDefault = false
 }: Request): Promise<Response> => {
   const schema = Yup.object().shape({
@@ -75,6 +77,7 @@ const CreateWhatsAppService = async ({
       status,
       greetingMessage,
       farewellMessage,
+      proxy,
       isDefault
     },
     { include: ["queues"] }

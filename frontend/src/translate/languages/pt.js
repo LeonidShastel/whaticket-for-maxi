@@ -191,6 +191,7 @@ const messages = {
           name: "Nome",
           color: "Cor",
           greetingMessage: "Mensagem de saudação",
+          proxy: "Procuração"
         },
         buttons: {
           okAdd: "Adicionar",

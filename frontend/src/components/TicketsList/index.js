@@ -306,7 +306,8 @@ const TicketsList = (props) => {
 			const newCountObject = tickets.reduce((acc, ticket) => {
 				if (!acc[ticket.whatsappId])
 					acc[ticket.whatsappId] = 0;
-				acc[ticket.whatsappId]++;
+				if (ticket.unreadMessages !== 0)
+					acc[ticket.whatsappId]++;
 
 				return acc;
 			}, {})
@@ -314,7 +315,7 @@ const TicketsList = (props) => {
 			updateCount(newCountObject);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [tickets]);
+	}, [tickets, ticketsList]);
 
 	const loadMore = () => {
 		setPageNumber(prevState => prevState + 1);

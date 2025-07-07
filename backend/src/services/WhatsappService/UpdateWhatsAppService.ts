@@ -13,6 +13,7 @@ interface WhatsappData {
   isDefault?: boolean;
   greetingMessage?: string;
   farewellMessage?: string;
+  proxy?: string;
   queueIds?: number[];
 }
 
@@ -43,6 +44,7 @@ const UpdateWhatsAppService = async ({
     session,
     greetingMessage,
     farewellMessage,
+    proxy,
     queueIds = []
   } = whatsappData;
 
@@ -75,6 +77,7 @@ const UpdateWhatsAppService = async ({
     session,
     greetingMessage,
     farewellMessage,
+    proxy,
     isDefault
   });
 

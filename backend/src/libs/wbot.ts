@@ -1,10 +1,17 @@
 import qrCode from "qrcode-terminal";
-import { Client, LocalAuth } from "whatsapp-web.js";
-import { getIO } from "./socket";
+import {Client, LocalAuth} from "whatsapp-web.js";
+import {getIO} from "./socket";
 import Whatsapp from "../models/Whatsapp";
 import AppError from "../errors/AppError";
-import { logger } from "../utils/logger";
-import { handleMessage } from "../services/WbotServices/wbotMessageListener";
+import {logger} from "../utils/logger";
+import {handleMessage} from "../services/WbotServices/wbotMessageListener";
+
+interface Proxy {
+  ip: string,
+  port: number,
+  username: string,
+  password: string
+}
 
 interface Session extends Client {
   id?: number;
@@ -32,6 +39,20 @@ const syncUnreadMessages = async (wbot: Session) => {
   }
 };
 
+const getProxy = (proxy: string | null): Proxy | null => {
+  if (!(typeof proxy === 'string' && proxy.length > 0))
+    return null;
+
+  const [ip, port, username, password] = proxy.split(':');
+
+  return {
+    ip,
+    port: +port,
+    username,
+    password
+  }
+}
+
 export const initWbot = async (whatsapp: Whatsapp): Promise<Session> => {
   return new Promise((resolve, reject) => {
     try {
@@ -43,25 +64,37 @@ export const initWbot = async (whatsapp: Whatsapp): Promise<Session> => {
         sessionCfg = JSON.parse(whatsapp.session);
       }
 
-      const args:String = process.env.CHROME_ARGS || "";
+      const args: string[] = (process.env.CHROME_ARGS || "").split(' ');
+
+      let proxyAuthentication;
+
+      const proxy = getProxy(whatsapp.proxy);
+      if (proxy !== null) {
+        proxyAuthentication = {
+          username: proxy.username,
+          password: proxy.password
+        }
+        args.push(`--http-proxy=${proxy.ip}:${proxy.port}`);
+      }
 
       const wbot: Session = new Client({
         session: sessionCfg,
-        authStrategy: new LocalAuth({clientId: 'bd_'+whatsapp.id}),
+        authStrategy: new LocalAuth({clientId: 'bd_' + whatsapp.id}),
         puppeteer: {
           executablePath: process.env.CHROME_BIN || undefined,
           // @ts-ignore
           browserWSEndpoint: process.env.CHROME_WS || undefined,
-          args: args.split(' ')
-        }
+          args: args
+        },
+        proxyAuthentication
       });
 
       wbot.initialize();
 
       wbot.on("qr", async qr => {
         logger.info("Session:", sessionName);
-        qrCode.generate(qr, { small: true });
-        await whatsapp.update({ qrcode: qr, status: "qrcode", retries: 0 });
+        qrCode.generate(qr, {small: true});
+        await whatsapp.update({qrcode: qr, status: "qrcode", retries: 0});
 
         const sessionIndex = sessions.findIndex(s => s.id === whatsapp.id);
         if (sessionIndex === -1) {
@@ -85,7 +118,7 @@ export const initWbot = async (whatsapp: Whatsapp): Promise<Session> => {
         );
 
         if (whatsapp.retries > 1) {
-          await whatsapp.update({ session: "", retries: 0 });
+          await whatsapp.update({session: "", retries: 0});
         }
 
         const retry = whatsapp.retries;

@@ -192,6 +192,7 @@ const messages = {
           name: "Nombre",
           color: "Color",
           greetingMessage: "Mensaje de saludo",
+          proxy: "Apoderada"
         },
         buttons: {
           okAdd: "Añadir",

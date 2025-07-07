@@ -14,6 +14,7 @@ interface WhatsappData {
   queueIds: number[];
   greetingMessage?: string;
   farewellMessage?: string;
+  proxy?: string;
   status?: string;
   isDefault?: boolean;
 }
@@ -31,6 +32,7 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
     isDefault,
     greetingMessage,
     farewellMessage,
+    proxy,
     queueIds
   }: WhatsappData = req.body;
 
@@ -40,6 +42,7 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
     isDefault,
     greetingMessage,
     farewellMessage,
+    proxy,
     queueIds
   });
 
